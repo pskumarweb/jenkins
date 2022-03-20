@@ -1,0 +1,11 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: cert-jenkins.quantic.group
+  # selfsigned-cert
+spec:
+  dnsNames:
+    - jenkins.quantic.group
+  secretName: tls-jenkins.quantic.group
+  issuerRef:
+    name: prod-letsencrypt

@@ -1,0 +1,26 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-jenkins.quantic.group
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+
+spec:
+  tls:
+  - hosts:
+    - jenkins.quantic.group
+    secretName: tls-jenkins.quantic.group
+
+  rules:
+  - host: jenkins.quantic.group
+    http:
+      paths:
+      - path: /
+        backend:
+          service:
+            name: jenkins
+            port:
+              number: 80
+        path: /
+        pathType: Prefix
+
