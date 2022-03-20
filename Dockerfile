@@ -1,19 +1,37 @@
-FROM ubuntu:bionic-20220315
+FROM ubuntu:20.04
+
+ARG DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && apt-get install -y --no-install-recommends openjdk-8-jdk wget git curl zip && rm -rf /var/lib/apt/lists/*
 
+RUN apt-get -y update
+
+RUN apt-get -y upgrade
+
+RUN apt-get -y dist-upgrade
+
 RUN update-ca-certificates -f
 
+RUN rm -rf /etc/apt/trusted.gpg.d/*
 
-RUN apt-get install -y curl gnupg lsb-release
+RUN apt-get install -y -f -q curl gnupg lsb-release
 
-RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+# RUN curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
+# RUN apt-add-repository "deb http://apt.kubernetes.io/ kubernetes-xenial main"
+
+
+RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
 
 RUN echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu  $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 40976EAF437D05B5
+RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 3B4FE6ACC0B21F32
+RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 871920D1991BC93C
 
 RUN apt-get update
 
 RUN apt-get install -y docker-ce docker-ce-cli containerd.io
+# RUN apt-get install -y docker.io
 
 ENV JENKINS_HOME /var/jenkins_home
 
